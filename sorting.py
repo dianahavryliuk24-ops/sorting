@@ -1,75 +1,76 @@
 import random
 
-
 def bubble_sort(arr):
-    a = arr.copy()
-    n = len(a)
+    arr = arr.copy()
     iterations = 0
 
-    for i in range(n):
-        swapped = False
-        for j in range(0, n - i - 1):
+    for i in range(len(arr)):
+        for j in range(0, len(arr) - i - 1):
             iterations += 1
-            if a[j] > a[j + 1]:
-                a[j], a[j + 1] = a[j + 1], a[j]
-                swapped = True
-        if not swapped:
-            break
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
-    return a, iterations
-
+    return arr, iterations
 
 def selection_sort(arr):
-    a = arr.copy()
-    n = len(a)
+    arr = arr.copy()
     iterations = 0
 
-    for i in range(n):
-        min_idx = i
-        for j in range(i + 1, n):
+    for i in range(len(arr)):
+        min_index = i
+        for j in range(i + 1, len(arr)):
             iterations += 1
-            if a[j] < a[min_idx]:
-                min_idx = j
-        a[i], a[min_idx] = a[min_idx], a[i]
+            if arr[j] < arr[min_index]:
+                min_index = j
+        arr[i], arr[min_index] = arr[min_index], arr[i]
 
-    return a, iterations
+    return arr, iterations
 
+def quick_sort(arr):
+    iterations = 0
 
-def quick_sort(arr, iterations=None):
-    if iterations is None:
-        iterations = [0]
+    def sort(sub_arr):
+        nonlocal iterations
+        if len(sub_arr) <= 1:
+            return sub_arr
 
-    if len(arr) <= 1:
-        return arr, iterations[0]
+        pivot = sub_arr[len(sub_arr) // 2]
+        left = []
+        middle = []
+        right = []
 
-    pivot = arr[len(arr) // 2]
-    left, middle, right = [], [], []
+        for x in sub_arr:
+            iterations += 1
+            if x < pivot:
+                left.append(x)
+            elif x == pivot:
+                middle.append(x)
+            else:
+                right.append(x)
 
-    for x in arr:
-        iterations[0] += 1
-        if x < pivot:
-            left.append(x)
-        elif x == pivot:
-            middle.append(x)
-        else:
-            right.append(x)
+        return sort(left) + middle + sort(right)
 
-    sorted_left, _ = quick_sort(left, iterations)
-    sorted_right, _ = quick_sort(right, iterations)
+    result = sort(arr)
+    return result, iterations
 
-    return sorted_left + middle + sorted_right, iterations[0]
+test_array = [38, 27, 43, 3, 9, 82, 10]
 
+print("Початковий масив:", test_array)
+print("Бульбашка:", bubble_sort(test_array))
+print("Вибірка:  ", selection_sort(test_array))
+print("Швидке:   ", quick_sort(test_array))
+print()
 
 sizes = [10, 50, 100, 500, 1000]
 
-print(f"{'Розмір (N)':<12} | {'Бульбашка':<15} | {'Вибірка':<15} | {'Швидке (Quick)':<15}")
+print(f"{'Розмір (N)':<12} | {'Бульбашка':<15} | {'Вибірка':<15} | {'Швидке':<15}")
 print("-" * 65)
 
 for size in sizes:
-    test_data = [random.randint(1, 10000) for _ in range(size)]
+    array = [random.randint(1, 10000) for _ in range(size)]
 
-    _, iter_bubble = bubble_sort(test_data)
-    _, iter_selection = selection_sort(test_data)
-    _, iter_quick = quick_sort(test_data)
+    _, bubble_iter = bubble_sort(array)
+    _, selection_iter = selection_sort(array)
+    _, quick_iter = quick_sort(array)
 
-    print(f"{size:<12} | {iter_bubble:<15} | {iter_selection:<15} | {iter_quick:<15}")
+    print(f"{size:<12} | {bubble_iter:<15} | {selection_iter:<15} | {quick_iter:<15}")
